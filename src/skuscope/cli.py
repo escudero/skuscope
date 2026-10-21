@@ -1,14 +1,13 @@
-"""Command line: build a catalog, recognize a shelf photo, or launch the web demo."""
+"""Command line: build a catalog, recognize a shelf photo or video, or launch the web demo."""
 
 import argparse
 import json
 from pathlib import Path
 
 from skuscope.config import DETECTOR_WEIGHTS, EMBEDDERS
+from skuscope.pipeline import DEFAULT_MARGIN, DEFAULT_THRESHOLD
 
 DEFAULT_INDEX = Path("index")
-# DINOv2 scores even different products at 0.6-0.8, so the bar sits high.
-DEFAULT_THRESHOLD = 0.8
 
 
 def cmd_build_catalog(args: argparse.Namespace) -> None:
@@ -19,8 +18,10 @@ def cmd_build_catalog(args: argparse.Namespace) -> None:
     detector = None if args.no_crop else ProductDetector(args.detector)
     catalog = build_catalog(args.photos, Embedder(args.embedder), detector)
     catalog.save(args.index)
-    skus = sorted(set(catalog.skus))
+    skus = catalog.sku_names
     print(f"Catalog saved to {args.index}: {len(catalog.skus)} photos of {len(skus)} SKUs ({', '.join(skus)})")
+    if catalog.families:
+        print(f"  {len(catalog.families)} families: {', '.join(sorted(catalog.families))}")
 
 
 def cmd_recognize(args: argparse.Namespace) -> None:
@@ -33,12 +34,12 @@ def cmd_recognize(args: argparse.Namespace) -> None:
     catalog = Catalog.load(args.index)
     image = load_photo(args.image)
     detections = recognize(
-        image, ProductDetector(args.detector, args.conf), Embedder(catalog.embedder), catalog, args.threshold
+        image, ProductDetector(args.detector, args.conf), Embedder(catalog.embedder), catalog, args.threshold, args.margin
     )
 
     out = args.out or Path("outputs") / f"{args.image.stem}_skuscope.jpg"
     out.parent.mkdir(parents=True, exist_ok=True)
-    annotate(image, detections, palette_for(catalog.skus)).save(out, quality=92)
+    annotate(image, detections, palette_for(catalog.labels)).save(out, quality=92)
 
     counts = count_skus(detections)
     print(f"{len(detections)} products detected → {out}")
@@ -53,10 +54,45 @@ def cmd_recognize(args: argparse.Namespace) -> None:
         args.json.write_text(json.dumps({"counts": dict(counts), "detections": rows}, indent=2, ensure_ascii=False))
 
 
+def cmd_video(args: argparse.Namespace) -> None:
+    from skuscope.catalog import Catalog
+    from skuscope.detector import ProductDetector
+    from skuscope.draw import palette_for
+    from skuscope.embedder import Embedder
+    from skuscope.video import recognize_video
+
+    catalog = Catalog.load(args.index)
+    out = args.out or Path("outputs") / f"{args.video.stem}_skuscope.mp4"
+
+    def progress(frame: int, total: int) -> None:
+        print(f"\r  frame {frame}/{total}", end="", flush=True)
+
+    result = recognize_video(
+        args.video,
+        ProductDetector(args.detector, args.conf),
+        Embedder(catalog.embedder),
+        catalog,
+        args.threshold,
+        args.margin,
+        out,
+        palette_for(catalog.labels),
+        progress,
+        tuple(args.motion_region),
+    )
+    print(f"\n{result.frames} frames, {result.seen} different products seen, "
+          f"{sum(result.counts.values())} counted → {out}")
+    for label, n in result.counts.most_common():
+        print(f"  {label:<30} {n:>4}")
+
+    if args.json:
+        summary = {"frames": result.frames, "seen": result.seen, "counts": dict(result.counts)}
+        args.json.write_text(json.dumps(summary, indent=2, ensure_ascii=False))
+
+
 def cmd_app(args: argparse.Namespace) -> None:
     from skuscope.app import launch
 
-    launch(args.index, args.detector, DEFAULT_THRESHOLD, args.share)
+    launch(args.index, args.detector, DEFAULT_THRESHOLD, DEFAULT_MARGIN, args.share)
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -71,15 +107,38 @@ def main(argv: list[str] | None = None) -> None:
     build.add_argument("--no-crop", action="store_true", help="Embed whole photos instead of the largest detected product")
     build.set_defaults(func=cmd_build_catalog)
 
+    def add_matching_options(command: argparse.ArgumentParser) -> None:
+        command.add_argument("--index", type=Path, default=DEFAULT_INDEX)
+        command.add_argument(
+            "--threshold", type=float, default=DEFAULT_THRESHOLD, help="Minimum cosine similarity to accept a SKU"
+        )
+        command.add_argument(
+            "--margin", type=float, default=DEFAULT_MARGIN, help="How much the best SKU must beat the second best"
+        )
+        command.add_argument("--conf", type=float, default=0.25, help="Detector confidence")
+        command.add_argument("--detector", choices=sorted(DETECTOR_WEIGHTS), default="s")
+
     rec = sub.add_parser("recognize", help="Find and identify the SKUs on a shelf photo")
     rec.add_argument("image", type=Path)
-    rec.add_argument("--index", type=Path, default=DEFAULT_INDEX)
-    rec.add_argument("--threshold", type=float, default=DEFAULT_THRESHOLD, help="Minimum cosine similarity to accept a SKU")
-    rec.add_argument("--conf", type=float, default=0.25, help="Detector confidence")
-    rec.add_argument("--detector", choices=sorted(DETECTOR_WEIGHTS), default="s")
+    add_matching_options(rec)
     rec.add_argument("--out", type=Path, help="Annotated image (default: outputs/<image>_skuscope.jpg)")
     rec.add_argument("--json", type=Path, help="Also write detections as JSON")
     rec.set_defaults(func=cmd_recognize)
+
+    video = sub.add_parser("video", help="Track the products in a video and count each one once")
+    video.add_argument("video", type=Path)
+    add_matching_options(video)
+    video.add_argument("--out", type=Path, help="Annotated video (default: outputs/<video>_skuscope.mp4)")
+    video.add_argument("--json", type=Path, help="Also write the counts as JSON")
+    video.add_argument(
+        "--motion-region",
+        type=float,
+        nargs=2,
+        default=(0.0, 1.0),
+        metavar=("LEFT", "RIGHT"),
+        help="Estimate the camera motion only from this part of the width, as fractions (e.g. 0 0.5 for the left shelf)",
+    )
+    video.set_defaults(func=cmd_video)
 
     app = sub.add_parser("app", help="Launch the Gradio web demo")
     app.add_argument("--index", type=Path, default=DEFAULT_INDEX)

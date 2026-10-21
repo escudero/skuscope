@@ -1,8 +1,7 @@
 import numpy as np
 import pytest
 
-from skuscope.catalog import Catalog, Match, scan_photos
-from skuscope.pipeline import UNKNOWN, label
+from skuscope.catalog import Catalog, read_families, scan_photos
 
 
 def unit(*values: float) -> np.ndarray:
@@ -39,9 +38,36 @@ def test_mismatched_labels_are_rejected():
         Catalog(np.stack([unit(1, 0)]), ["a", "b"], ["x", "y"], "dinov2-small")
 
 
-def test_label_below_threshold_is_unknown():
-    assert label(Match("cola", 0.80), threshold=0.5) == "cola"
-    assert label(Match("cola", 0.30), threshold=0.5) == UNKNOWN
+def test_sku_scores_keep_the_best_photo_of_each_sku(catalog):
+    scores = catalog.sku_scores(np.stack([unit(0.9, 0.1, 0), unit(0, 1, 0)]))
+
+    assert catalog.sku_names == ["cola", "guarana"]
+    assert scores.shape == (2, 2)
+    assert scores[0, 0] == pytest.approx(1.0, abs=1e-5)  # the second cola photo
+    assert scores[1, 1] == pytest.approx(1.0, abs=1e-5)
+
+
+def test_sku_scores_with_no_queries(catalog):
+    assert catalog.sku_scores(np.empty((0, 3), dtype=np.float32)).shape == (0, 2)
+
+
+def test_families_are_saved_and_checked(catalog, tmp_path):
+    with_family = Catalog(catalog.vectors, catalog.skus, catalog.photos, "dinov2-small", {"soda": ["cola", "guarana"]})
+    with_family.save(tmp_path / "index")
+
+    loaded = Catalog.load(tmp_path / "index")
+
+    assert loaded.family("cola") == "soda"
+    assert loaded.labels == ["cola", "guarana", "soda"]
+    with pytest.raises(ValueError):
+        Catalog(catalog.vectors, catalog.skus, catalog.photos, "dinov2-small", {"soda": ["cola", "fanta"]})
+
+
+def test_read_families(tmp_path):
+    assert read_families(tmp_path) == {}
+    (tmp_path / "families.json").write_text('{"soda": ["cola", "cola-zero"]}')
+
+    assert read_families(tmp_path) == {"soda": ["cola", "cola-zero"]}
 
 
 def test_scan_photos_reads_one_folder_per_sku(tmp_path):

@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "skuscope"
 version = "0.1.0"
-description = "Recognize retail SKUs on shelf photos: YOLO finds the products, DINO tells which one each is."
+description = "Recognize retail SKUs on shelf photos and videos: YOLO finds the products, DINO tells which one each is."
 readme = "README.md"
 license = "AGPL-3.0-or-later"
 license-files = ["LICENSE"]
@@ -14,6 +14,7 @@ authors = [{ name = "Claudio Escudero" }]
 keywords = ["computer-vision", "retail", "yolo", "dinov2", "sku", "shelf"]
 dependencies = [
     "ultralytics>=8.3.0",
+    "opencv-python>=4.8",
     "onnx>=1.16",
     "onnxruntime>=1.18",
     "torch>=2.2",

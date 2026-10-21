@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.DS_Store
+
+# Generated
+index/
+outputs/
+*.onnx
+*.pt
+
+# Your own photos stay local unless you decide to publish them
+data/catalog/*
+data/shelves/*
+!data/catalog/README.md
+!data/shelves/README.md

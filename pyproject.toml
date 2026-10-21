@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "skuscope"
+version = "0.1.0"
+description = "Recognize retail SKUs on shelf photos: YOLO finds the products, DINO tells which one each is."
+readme = "README.md"
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [{ name = "Claudio Escudero" }]
+keywords = ["computer-vision", "retail", "yolo", "dinov2", "sku", "shelf"]
+dependencies = [
+    "ultralytics>=8.3.0",
+    "onnx>=1.16",
+    "onnxruntime>=1.18",
+    "torch>=2.2",
+    "transformers>=4.56",
+    "huggingface_hub>=0.24",
+    "numpy",
+    "pillow>=10.1",
+    "pillow-heif>=0.16",
+]
+
+[project.optional-dependencies]
+app = ["gradio>=4"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+skuscope = "skuscope.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/skuscope"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

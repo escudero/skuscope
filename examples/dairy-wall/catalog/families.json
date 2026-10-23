@@ -1,0 +1,51 @@
+{
+  "yoplait": [
+    "yoplait-yellow",
+    "yoplait-tropical",
+    "yoplait-berry",
+    "yoplait-raspberry",
+    "yoplait-side"
+  ],
+  "fresh-n-fruity": [
+    "fnf-berry",
+    "fnf-passion-mango",
+    "fnf-strawberry-kiwi",
+    "fnf-tropical"
+  ],
+  "meadow-fresh-sour-cream": [
+    "mf-lite-sour-cream",
+    "mf-sour-cream-tall",
+    "mf-sour-cream-small"
+  ],
+  "anchor-sour-cream-family": [
+    "anchor-sour-cream",
+    "anchor-lite-sour-cream-big",
+    "anchor-sour-cream-small",
+    "anchor-lite-sour-cream"
+  ],
+  "anchor-cottage-cheese-family": [
+    "anchor-cottage-cheese",
+    "anchor-cottage-cheese-tall"
+  ],
+  "philadelphia": [
+    "philadelphia-block",
+    "philadelphia-tub",
+    "philadelphia-snack",
+    "philadelphia-sweet-chilli",
+    "philadelphia-light"
+  ],
+  "paysan-breton": [
+    "ricotta-blue",
+    "mascarpone"
+  ],
+  "meadow-fresh-yoghurt": [
+    "meadow-fresh-mango",
+    "meadow-fresh-strawberry",
+    "meadow-fresh-vanilla",
+    "meadow-fresh-boysenberry"
+  ],
+  "ricotta-green-family": [
+    "ricotta-green",
+    "ricotta-green-wide"
+  ]
+}

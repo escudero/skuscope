@@ -1,0 +1,20 @@
+{
+  "cup-noodles-family": [
+    "cup-noodles",
+    "cup-noodles-red",
+    "cup-noodles-orange"
+  ],
+  "nissin-bowl": [
+    "hot-and-spicy",
+    "hot-and-spicy-tray",
+    "yellow-bowl"
+  ],
+  "12-pack": [
+    "case-red",
+    "case-beige"
+  ],
+  "top-ramen-family": [
+    "top-ramen",
+    "top-ramen-pack"
+  ]
+}

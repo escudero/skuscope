@@ -125,6 +125,8 @@ pip install -e ".[app]"
 
 Os pesos dos modelos são baixados no primeiro uso, cerca de 200 MB no total (YOLO11s e DINOv2-small).
 
+Para reproduzir antes os resultados acima, os catálogos e o passo a passo estão em [`examples/`](examples/README.pt-BR.md).
+
 ### 1. Fotografe seu catálogo
 
 Escolha de 5 a 10 produtos e tire **de 3 a 5 fotos de cada**, com um produto por foto e alguns ângulos diferentes. Salve uma pasta por SKU:

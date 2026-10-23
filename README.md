@@ -125,6 +125,8 @@ pip install -e ".[app]"
 
 Model weights download on first use, about 200 MB in total (YOLO11s and DINOv2-small).
 
+To reproduce the results above first, the catalogs and step-by-step commands are in [`examples/`](examples/README.md).
+
 ### 1. Photograph your catalog
 
 Pick 5 to 10 products and take **3 to 5 photos of each**, with one product per photo and a few different angles. Save them in one folder per SKU:

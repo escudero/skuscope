@@ -120,7 +120,7 @@ skuscope recognize data/shelves/dairy.jpg --index examples/dairy-wall/index --th
 
 None of the catalog photos come from this frame. I took them from other moments of the same video (between 1 and 10 seconds), so the model is never matching a product against its own picture.
 
-About the 89% accuracy in the main README: I got it by labelling this frame by hand and comparing, using the scripts from the demo video. The command above uses the same method, but the hand labels aren't included here, so it can't tell you how many it got right. You'll have to look.
+About the 89% accuracy in the main README: I got it with the scripts from the demo video, by labelling by hand only the left part of this frame (208 of its 300 detections). On the rest of the frame I checked the named products by eye and found 4 to 7 more wrong names, so over the whole frame 7–8% of the named products get the wrong name. The hand labels aren't included here, so the command above can't tell you how many it got right. You'll have to look.
 
 Want to see the whole wall go by? Run `skuscope video data/shelves/dairy.mp4` with the same index and options.
 

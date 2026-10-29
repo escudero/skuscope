@@ -120,7 +120,7 @@ skuscope recognize data/shelves/dairy.jpg --index examples/dairy-wall/index --th
 
 Nenhuma foto do catálogo vem deste quadro. Tirei de outros momentos do mesmo vídeo (entre 1 e 10 segundos), então o modelo nunca compara um produto com a própria foto.
 
-Sobre os 89% de acerto do README principal: cheguei nesse número conferindo este quadro à mão e comparando, com os scripts do vídeo de demonstração. O comando acima usa o mesmo método, mas a conferência feita à mão não vem junto, então ele não tem como dizer quantos acertou. Aí é com você: abra a imagem e confira.
+Sobre os 89% de acerto do README principal: cheguei nesse número com os scripts do vídeo de demonstração, conferindo à mão só a parte esquerda deste quadro (208 das 300 detecções). No resto do quadro, conferi no olho os produtos com nome e achei de 4 a 7 nomes errados a mais. No quadro inteiro, então, de 7% a 8% dos produtos com nome recebem o nome errado. A conferência feita à mão não vem junto com este exemplo, então o comando acima não tem como dizer quantos acertou. Aí é com você: abra a imagem e confira.
 
 Quer ver a parede inteira passando? Rode `skuscope video data/shelves/dairy.mp4` com o mesmo índice e as mesmas opções.
 

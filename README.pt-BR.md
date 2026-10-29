@@ -107,8 +107,13 @@ Uma duplicata suspeita é um produto contado que aparece onde o movimento da câ
 
 | Cena | Produtos com o nome certo | Nome errado |
 |---|---|---|
-| Parede de laticínios, 35 produtos, 5 ou 6 fotos de cada | 174 de 196 (89%) | 10 |
+| Parede de laticínios, 35 produtos, 5 ou 6 fotos de cada (só a parte esquerda do quadro) | 174 de 196 (89%), 8 deles pela linha de produto | 10 |
 | Corredor de macarrão (o vídeo acima), 12 produtos | 129 de 167 (77%), 45 deles pela linha de produto | 7 |
+
+A tabela não cobre tudo:
+
+- **Parede de laticínios:** conferi à mão só a parte esquerda do quadro (os primeiros ~920 px de 1920, a parte que aparece no vídeo de demonstração), onde estão 208 das 300 detecções. À direita dela, outros 30 produtos receberam nome. Conferi no olho: 23 parecem certos, 4 estão errados (3 cream cheeses chamados de cottage cheese e 1 crème fraîche chamado de cream cheese), e 3 são recortes parciais na borda que não dá para julgar. No quadro inteiro, são de 14 a 17 nomes errados em 215 produtos com nome (de 7% a 8%).
+- **Corredor de macarrão:** 45 dos 129 acertos dão só a linha de produto (Cup Noodles, sem o sabor). O produto exato sai certo em 84 de 167 (50%).
 
 Os erros que sobram são entre produtos parecidos: cream cheese e cottage cheese da mesma marca, ricota e mascarpone. Esses números são otimistas, porque as fotos do catálogo saíram de outros quadros das mesmas filmagens, com a mesma luz e o mesmo ângulo. Foram medidos com os scripts do vídeo de demonstração, que usam este mesmo método.
 

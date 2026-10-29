@@ -107,8 +107,13 @@ A suspected duplicate is a counted product that shows up where the camera motion
 
 | Scene | Products named right | Wrong name |
 |---|---|---|
-| Dairy wall, 35 products, 5–6 photos each | 174 of 196 (89%) | 10 |
+| Dairy wall, 35 products, 5–6 photos each (left part of the frame only) | 174 of 196 (89%), 8 of them by product line | 10 |
 | Noodle aisle (the clip above), 12 products | 129 of 167 (77%), 45 of them by product line | 7 |
+
+The table doesn't cover everything:
+
+- **Dairy wall:** I only hand-labelled the left part of the frame (the first ~920 px of 1920, the part shown in the demo video), which holds 208 of its 300 detections. To the right of it, 30 more products got a name. I checked them by eye: 23 look right, 4 are wrong (3 cream cheeses named cottage cheese, 1 crème fraîche named cream cheese), and 3 are partial crops at the edge that I can't call. Over the whole frame, that's 14 to 17 wrong names out of 215 named products (7–8%).
+- **Noodle aisle:** 45 of the 129 right answers name only the product line (Cup Noodles, not the flavour). The exact product is right for 84 of 167 (50%).
 
 The remaining mistakes are lookalikes: cream cheese vs. cottage cheese of the same brand, ricotta vs. mascarpone. These numbers are optimistic, because the catalog photos come from other frames of the same footage, with the same light and angle. They were measured with the scripts behind the demo video, which use this same method.
 
